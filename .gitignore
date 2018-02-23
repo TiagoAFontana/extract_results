@@ -1,0 +1,8 @@
+__pycache__/
+__pycache__/*
+problem1/
+problem1/* 
+*.csv
+*.png
+*.pdf
+
