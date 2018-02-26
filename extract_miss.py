@@ -41,7 +41,6 @@ def mean_miss_dataFrame(path=".", execution="", problem="", aux="", missType = [
         data_DOD = pd.read_csv(path + "/" + problem + "/" + "miss_" + execution + "_" + problem + "_DOD_"+ circuit + aux + ".txt", sep=' ')
         valOOD = 0.0
         valDOD = 0.0
-#         print("desvio padrão % " + circuit )
         for i in missType:
             valOOD += data_OOD[i].mean()
             valDOD += data_DOD[i].mean()

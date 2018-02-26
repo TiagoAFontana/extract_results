@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 iccad2015_circuits = ["superblue18", "superblue4", "superblue16", "superblue5", "superblue1", "superblue3", "superblue10", "superblue7"]
 # iccad2015_circuits = ["superblue5"]
 
@@ -33,8 +34,8 @@ def mean_runtime_dataFrame(path=".", execution="", problem="", aux=""):
         data_DOD = pd.read_csv(path + "/" + problem + "/" + "runtime_" + execution + "_" + problem + "_DOD_"+ circuit + aux + ".txt", sep=' ')
         newDF.set_value(circuit, "OOD" + execution, data_OOD["runtime"].mean())
         newDF.set_value(circuit, "DOD" + execution, data_DOD["runtime"].mean())
-#         print("desvio padrão % " + circuit +" "+ str(data_OOD["runtime"].std() / data_OOD["runtime"].mean() *100) + " %")
-#         print("desvio padrão % " + circuit +" "+ str(data_DOD["runtime"].std() / data_DOD["runtime"].mean() *100) + " %")
+#         print("desvio padrão  %" + circuit +" "+ str(data_OOD["runtime"].std() \/ data_OOD["runtime"].mean() *100) + " %")
+#         print("desvio padrão  %" + circuit +" "+ str(data_DOD["runtime"].std() \/ data_DOD["runtime"].mean() *100) + " %")
 #         print("\n\n")
 #     print(newDF)
     return newDF
