@@ -21,7 +21,7 @@ def runtime_dataFrame(path=".", execution="", problem="", aux=""):
         newDF[circuit+"_DOD"] = [data_DOD["runtime"].mean() ]
     return newDF
 
-def mean_runtime_dataFrame(path=".", execution="", problem="", aux=""):
+def mean_runtime_dataFrame(path=".", execution="", problem="", aux="", ordered=""):
     RUNTIME = "Runtime"+execution +"_"+ problem+"_(us)"
 
     newDF = pd.DataFrame() #creates a new dataframe that's empty
@@ -31,9 +31,11 @@ def mean_runtime_dataFrame(path=".", execution="", problem="", aux=""):
 
     for circuit in iccad2015_circuits:
         data_OOD = pd.read_csv(path + "/" + problem + "/" + "runtime_" + execution + "_" + problem + "_OOD_"+ circuit + ".txt", sep=' ')
-        data_DOD = pd.read_csv(path + "/" + problem + "/" + "runtime_" + execution + "_" + problem + "_DOD_"+ circuit + aux + ".txt", sep=' ')
+        data_DOD = pd.read_csv(path + "/" + problem + "/" + "runtime_" + execution + "_" + problem + "_DOD_" + ordered + circuit + aux + ".txt", sep=' ')
         newDF.set_value(circuit, "OOD" + execution, data_OOD["runtime"].mean())
         newDF.set_value(circuit, "DOD" + execution, data_DOD["runtime"].mean())
+        newDF.set_value(circuit, "OOD_std" + execution, data_OOD["runtime"].std())
+        newDF.set_value(circuit, "DOD_std" + execution, data_DOD["runtime"].std())
 #         print("desvio padrão  %" + circuit +" "+ str(data_OOD["runtime"].std() \/ data_OOD["runtime"].mean() *100) + " %")
 #         print("desvio padrão  %" + circuit +" "+ str(data_DOD["runtime"].std() \/ data_DOD["runtime"].mean() *100) + " %")
 #         print("\n\n")

@@ -25,7 +25,7 @@ def miss_dataFrame(path=".", execution="", problem="", aux=""):
 #     print("CSV generated! -> (" + path + "/outPAPI.csv)")
     return newDF
 
-def mean_miss_dataFrame(path=".", execution="", problem="", aux="", missType = ["PAPI_L1_TCM", "PAPI_L2_TCM", "PAPI_L3_TCM"]):
+def mean_miss_dataFrame(path=".", execution="", problem="", aux="", missType = ["PAPI_L1_TCM", "PAPI_L2_TCM", "PAPI_L3_TCM"], ordered=""):
     PAPI = 'PAPI_' + execution +"_"+ problem
 #     missType = ["PAPI_L1_DCM", "PAPI_L1_ICM", "PAPI_L1_TCM", "PAPI_L2_DCM", "PAPI_L2_ICM", "PAPI_L2_TCM", "PAPI_L3_TCM"]
 #     missType = ["PAPI_L1_TCM", "PAPI_L2_TCM", "PAPI_L3_TCM"]
@@ -38,15 +38,19 @@ def mean_miss_dataFrame(path=".", execution="", problem="", aux="", missType = [
 
     for circuit in iccad2015_circuits:
         data_OOD = pd.read_csv(path + "/" + problem + "/" + "miss_" + execution + "_" + problem + "_OOD_"+ circuit + ".txt", sep=' ')
-        data_DOD = pd.read_csv(path + "/" + problem + "/" + "miss_" + execution + "_" + problem + "_DOD_"+ circuit + aux + ".txt", sep=' ')
-        valOOD = 0.0
-        valDOD = 0.0
+        data_DOD = pd.read_csv(path + "/" + problem + "/" + "miss_" + execution + "_" + problem + "_DOD_"+ ordered + circuit + aux + ".txt", sep=' ')
+        
+        data_OOD["TOTAL"] = 0
+        data_DOD["TOTAL"] = 0
         for i in missType:
-            valOOD += data_OOD[i].mean()
-            valDOD += data_DOD[i].mean()
-#             print(i +" OOD "+ str(data_OOD[i].std() / data_OOD[i].mean() *100) + " %")
-#             print(i +" DOD "+ str(data_DOD[i].std() / data_DOD[i].mean() *100) + " %")
-        newDF.set_value(circuit, "OOD", valOOD)
-        newDF.set_value(circuit, "DOD", valDOD)
-#     print(newDF)
+            data_OOD["TOTAL"] += data_OOD[i]
+            data_DOD["TOTAL"] += data_DOD[i]
+
+        newDF.set_value(circuit, "OOD", data_OOD["TOTAL"].mean())
+        newDF.set_value(circuit, "DOD", data_DOD["TOTAL"].mean())
+        newDF.set_value(circuit, "OOD_std", data_OOD["TOTAL"].std())
+        newDF.set_value(circuit, "DOD_std", data_DOD["TOTAL"].std())
+
+
+    # print(newDF)
     return newDF
