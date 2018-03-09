@@ -23,8 +23,9 @@ def plot_miss_graphic(y_ticks, path_to_csv=".", filename="problem1_py", out_path
     # y_limits = 'None'
     y_limits = [y_ticks[0], y_ticks[2]]
     
-    target_format = "pdf"
-    # target_format = "png"
+    # target_format = "pdf"
+    # target_format = "svg"
+    target_format = "png"
     bar_width = .75
     discartColumns = 2 # remove average
     # _data = data[:len(data)-2]  # remove average
@@ -40,7 +41,7 @@ def plot_miss_graphic(y_ticks, path_to_csv=".", filename="problem1_py", out_path
 
 # Gerar CSVs Independentes por problema
 # def plot_miss_graphic(path_to_csv=".", filename="problem1_py", out_path='.', title="" format="csv"):
-path = '/home/tiago/experiments16-02/2602'
+path = '/home/tiago/experiments16-02/0803'
 out_path = path + '/graficos'
 
 if True:
@@ -56,9 +57,9 @@ if True:
     plot_miss_graphic([0, 20000000.0, 100000000.0], path+'/csv', "problem2_miss_parallel", out_path, "Problema 2: Miss Parallel")
     # ORDERED
     # Miss Sequential Problem 2 Ordered
-    plot_miss_graphic([0, 20000000.0, 100000000.0], path+'/csv', "problem2_miss_sequential_ordered", out_path, "Problema 2 (com agrupamento): Miss Sequential")
+    # plot_miss_graphic([0, 20000000.0, 100000000.0], path+'/csv', "problem2_miss_sequential_ordered", out_path, "Problema 2 (com agrupamento): Miss Sequential")
     # Miss Parallel Problem 2 Ordered
-    plot_miss_graphic([0, 20000000.0, 100000000.0], path+'/csv', "problem2_miss_parallel_ordered", out_path, "Problema 2(com agrupamento): Miss Parallel")
+    # plot_miss_graphic([0, 20000000.0, 100000000.0], path+'/csv', "problem2_miss_parallel_ordered", out_path, "Problema 2(com agrupamento): Miss Parallel")
 if True:
     # PROPERTY ORDERED
     # Miss Sequential Problem 2 Ordered
@@ -70,5 +71,4 @@ if True:
     # Miss Sequential Problem 3
     plot_miss_graphic([0, 50000000.0, 350000000.0], path+'/csv', "problem3_miss_sequential", out_path, "Problema 3: Miss Sequential")
     # Miss Parallel Problem 3
-
     plot_miss_graphic([0, 50000000.0, 350000000.0], path+'/csv', "problem3_miss_parallel", out_path, "Problema 3: Miss Parallel")

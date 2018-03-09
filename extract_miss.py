@@ -46,11 +46,27 @@ def mean_miss_dataFrame(path=".", execution="", problem="", aux="", missType = [
             data_OOD["TOTAL"] += data_OOD[i]
             data_DOD["TOTAL"] += data_DOD[i]
 
+        #media das execuções de cada circuito
         newDF.set_value(circuit, "OOD", data_OOD["TOTAL"].mean())
         newDF.set_value(circuit, "DOD", data_DOD["TOTAL"].mean())
+        # desvio das execuções de cada circuito
         newDF.set_value(circuit, "OOD_std", data_OOD["TOTAL"].std())
-        newDF.set_value(circuit, "DOD_std", data_DOD["TOTAL"].std())
+        newDF.set_value(circuit, "DOD_std", data_DOD["TOTAL"].std())  
+    
+    for circuit in iccad2015_circuits:
+        # relação entre DOD e OOD "1-(DOD/OOD)"
+        OOD = newDF.get_value(circuit, "OOD")
+        DOD = newDF.get_value(circuit, "DOD")
+        newDF.set_value(circuit, "1-(DOD/OOD)", 1-(DOD/OOD))
 
-
+    # # relação média entre DOD e OOD
+    newDF.set_value(iccad2015_circuits[-1], "", newDF["1-(DOD/OOD)"].mean())
+    
+    # media de todos os circuitos
+    # mediaOOD = newDF["OOD"].mean()
+    # mediaDOD = newDF["DOD"].mean()
+    # newDF.set_value(iccad2015_circuits[-1], "mean_OOD", mediaOOD)
+    # newDF.set_value(iccad2015_circuits[-1], "mean_DOD", mediaDOD)
+    
     # print(newDF)
     return newDF

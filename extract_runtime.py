@@ -40,4 +40,20 @@ def mean_runtime_dataFrame(path=".", execution="", problem="", aux="", ordered="
 #         print("desvio padrão  %" + circuit +" "+ str(data_DOD["runtime"].std() \/ data_DOD["runtime"].mean() *100) + " %")
 #         print("\n\n")
 #     print(newDF)
+
+    for circuit in iccad2015_circuits:
+        # relação entre DOD e OOD "1-(DOD/OOD)"
+        OOD = newDF.get_value(circuit, "OOD"+ execution)
+        DOD = newDF.get_value(circuit, "DOD"+ execution)
+        newDF.set_value(circuit, "1-(DOD/OOD)", 1-(DOD/OOD))
+
+    # # relação média entre DOD e OOD
+    newDF.set_value(iccad2015_circuits[-1], "", newDF["1-(DOD/OOD)"].mean())
+    
+    # media de todos os circuitos
+    # mediaOOD = newDF["OOD"+ execution].mean()
+    # mediaDOD = newDF["DOD"+ execution].mean()
+    # newDF.set_value(iccad2015_circuits[-1], "mean_OOD", mediaOOD)
+    # newDF.set_value(iccad2015_circuits[-1], "mean_DOD", mediaDOD)
+
     return newDF
