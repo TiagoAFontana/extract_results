@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 import matplotlib.patches as mpatches
 import matplotlib.lines as mlines
+import re as re
 from decimal import Decimal
 
 def xtract_2D_data(in_file, sep=','):
@@ -18,8 +19,12 @@ def xtract_2D_data(in_file, sep=','):
 		data.append(y_data)
 	# print(x_ticks_labels)
 	# print(group_labels)
-	# print(data)
-	return x_ticks_labels, group_labels, data
+	unit=''
+	if key[-1] == ')':
+		m = re.search(r'.*?\((.*)\).*' , key)
+		unit = m.group(1)
+		# print(unit)
+	return x_ticks_labels, group_labels, data, unit
 
 def xdistribution(nticks, groupsize, width, spacing, offset=0):
 	xticks = []
@@ -32,13 +37,22 @@ def xdistribution(nticks, groupsize, width, spacing, offset=0):
 		xticks.append(current + (grouplength - offset)/4)
 	return positions, xticks
 
-def plot_group_bars(title, labels, x_ticks_labels, _group_labels, y_ticks, _data, colors, out_path, y_limits='None', target_format="png", bar_width=.75, discartColumns=0):
+def plot_group_bars(title, labels, x_ticks_labels, _group_labels, y_ticks, _data, colors, out_path, y_limits='None', target_format="png", bar_width=.75, discartColumns=0, scale='linear'):
 	group_labels = _group_labels[:len(_group_labels)-discartColumns]
 	data = _data[:len(_data)-discartColumns]
 
 	fig, ax = plt.subplots()
 
 	ax.set_title(title, fontsize=18)
+
+	if scale != 'linear':
+		ax.set_yscale(scale, linthreshy=600, nonposy='clip')
+	else:
+		ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
+		ax.set_yticks(np.arange(y_ticks[0], y_ticks[2], y_ticks[1]))
+		
+	if y_limits != 'None':
+		ax.set_ylim(y_limits[0], y_limits[1])
 
 	# grid
 	ax.set_axisbelow(True) #true = set grid to de end
@@ -55,31 +69,46 @@ def plot_group_bars(title, labels, x_ticks_labels, _group_labels, y_ticks, _data
 	ax.tick_params(axis='x', direction='out', top=False)
 	ax.tick_params(axis='y', direction='in', right=False)
 
-	ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
-	ax.set_yticks(np.arange(y_ticks[0], y_ticks[2], y_ticks[1]))
+	
+	
 	ax.set_xticks(x_ticks)
 
 	ax.set_xlabel(labels[0])
 	ax.set_ylabel(labels[1])
 	ax.set_xticklabels(x_ticks_labels, rotation=45, horizontalalignment='right')
 
-	if y_limits != 'None':
-		ax.set_ylim(y_limits[0], y_limits[1])
-
-	#error bar
+	numberOfBars = len(_group_labels)-discartColumns
+	numElement=len(_data[0])
+	#center of error bar
 	height = []
-	for ood, dod in zip(_data[0], _data[1]):
-		height.append(ood)
-		height.append(dod)
-	error = []
-	for ood, dod in zip(_data[2], _data[3]):
-		error.append(ood)
-		error.append(dod)
+	i=0
+	while i < numElement:
+		for c in _data[:numberOfBars]:
+			height.append(c[i])
+		i+=1 
+	# standard deviation
+	std = []
+	i=0
+	while i < numElement:
+		for c in _data[numberOfBars:(numberOfBars*2)]:
+			std.append(c[i])
+		i+=1 
+	# confidence interval
+	ci = []
+	i=0
+	while i < numElement:
+		for c in _data[(numberOfBars*2):(numberOfBars*3)]:
+			ci.append(c[i])
+		i+=1
+
+	ax.text(1.0, ax.get_ybound()[1] - (ax.get_ybound()[1]*0.01) , "IC = 99% " , fontsize=6, rotation=0, va='top', ha="right", transform=ax.get_yaxis_transform())
+	# error = list(std) # show standard deviation
+	error = list(ci)  # show confidence interval
 	for pos, y, err in zip(x_position, height, error):
 		ax.errorbar(pos, y, err, lw=.5, capsize=2, capthick=.5, color='gray', zorder=5)
 		# print error % in relation to bar
-		val = err / y * 100
-		ax.text(pos, y + 2* err , "{:.2f}".format(val)+ " %" , fontsize=6, rotation=90, va='bottom', ha="center")
+		# val = err / y * 100
+		# ax.text(pos, y + 2* err , "{:.2f}".format(val)+ " %" , fontsize=6, rotation=90, va='bottom', ha="center")
 
 	# mean line
 	mediaOOD = np.mean(data, axis=1)[0]
@@ -90,8 +119,19 @@ def plot_group_bars(title, labels, x_ticks_labels, _group_labels, y_ticks, _data
 	t1 = ax.text(1.02, mediaOOD, "{:.2E}".format(Decimal(mediaOOD)), va='center', ha="left", bbox=dict(facecolor="w", alpha=0.5), transform=ax.get_yaxis_transform())
 	t2 = ax.text(1.02, mediaDOD, "{:.2E}".format(Decimal(mediaDOD)), va='center', ha="left", bbox=dict(facecolor="w", alpha=0.5), transform=ax.get_yaxis_transform())
 	# print the percentage of redution
-	tt = ax.text(1.02, ((mediaOOD+mediaDOD)/2), str(round(((1-(mediaDOD/mediaOOD))*100), 2)) + " %", va='center', ha="left", transform=ax.get_yaxis_transform() )
+	val = round(((1-(mediaDOD/mediaOOD))*100), 2)
+	if val == 100:
+		percent = ((1-(mediaDOD/mediaOOD))*100)
+		val = str(percent)[:5]
+	else:
+		val = str(val)	
+
+	center = np.min([mediaDOD, mediaOOD]) + ( np.abs(mediaOOD-mediaDOD) / 2 )
+	# print(center)
+	tt = ax.text(1.02, ((mediaOOD+mediaDOD)/2), val + " %", va='center', ha="left", transform=ax.get_yaxis_transform() )
 	
+	# plt.annotate(val + " %", xy=(20.02, mediaDOD), xytext=(1.02, center), arrowprops=dict(facecolor='black', shrink=0.05))
+
 	# mean arrow
 
 	# bbox_props = dict(boxstyle="darrow,pad=0.4", fc="w", ec="black", lw=1)

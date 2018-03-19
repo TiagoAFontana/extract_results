@@ -8,6 +8,8 @@ import numpy as np
 import os
 from os import listdir
 from os.path import isfile, join
+import scipy as sp
+import scipy.stats
 
 def runtime_dataFrame(path=".", execution="", problem="", aux=""):
     newDF = pd.DataFrame() #creates a new dataframe that's empty
@@ -22,7 +24,12 @@ def runtime_dataFrame(path=".", execution="", problem="", aux=""):
     return newDF
 
 def mean_runtime_dataFrame(path=".", execution="", problem="", aux="", ordered=""):
-    RUNTIME = "Runtime"+execution +"_"+ problem+"_(us)"
+    #get unit 
+    circuit = 'superblue18'
+    data_DOD = pd.read_csv(path + "/" + problem + "/" + "runtime_" + execution + "_" + problem + "_DOD_" + ordered + circuit + aux + ".txt", sep=' ')
+    unit = data_DOD["unidade"][0]
+
+    RUNTIME = "Runtime" +"_"+ execution +"_"+ problem+"_("+unit+")"
 
     newDF = pd.DataFrame() #creates a new dataframe that's empty
     newDF = pd.DataFrame(  {RUNTIME: [] })
@@ -39,6 +46,18 @@ def mean_runtime_dataFrame(path=".", execution="", problem="", aux="", ordered="
 #         print("desvio padrão  %" + circuit +" "+ str(data_OOD["runtime"].std() \/ data_OOD["runtime"].mean() *100) + " %")
 #         print("desvio padrão  %" + circuit +" "+ str(data_DOD["runtime"].std() \/ data_DOD["runtime"].mean() *100) + " %")
 #         print("\n\n")
+        
+        #intervalo de confianca de cada circuito
+        n = len(data_OOD["runtime"])
+        m, se = np.mean(data_OOD["runtime"].values), scipy.stats.sem(data_OOD["runtime"].values)
+        icOOD = se * sp.stats.t._ppf((1+0.99)/2., n-1)
+        n = len(data_DOD["runtime"])
+        m, se = np.mean(data_DOD["runtime"].values), scipy.stats.sem(data_DOD["runtime"].values)
+        icDOD = se * sp.stats.t._ppf((1+0.99)/2., n-1)
+        newDF.set_value(circuit, "OOD_ic", icOOD)
+        newDF.set_value(circuit, "DOD_ic", icDOD)
+
+
 #     print(newDF)
 
     for circuit in iccad2015_circuits:

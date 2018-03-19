@@ -7,6 +7,8 @@ import numpy as np
 import os
 from os import listdir
 from os.path import isfile, join
+import scipy as sp
+import scipy.stats
 
 def miss_dataFrame(path=".", execution="", problem="", aux=""):
     PAPI = 'PAPI_' + execution
@@ -51,7 +53,16 @@ def mean_miss_dataFrame(path=".", execution="", problem="", aux="", missType = [
         newDF.set_value(circuit, "DOD", data_DOD["TOTAL"].mean())
         # desvio das execuções de cada circuito
         newDF.set_value(circuit, "OOD_std", data_OOD["TOTAL"].std())
-        newDF.set_value(circuit, "DOD_std", data_DOD["TOTAL"].std())  
+        newDF.set_value(circuit, "DOD_std", data_DOD["TOTAL"].std()) 
+        #intervalo de confianca de cada circuito
+        n = len(data_OOD["TOTAL"])
+        m, se = np.mean(data_OOD["TOTAL"].values), scipy.stats.sem(data_OOD["TOTAL"].values)
+        icOOD = se * sp.stats.t._ppf((1+0.99)/2., n-1)
+        n = len(data_DOD["TOTAL"])
+        m, se = np.mean(data_DOD["TOTAL"].values), scipy.stats.sem(data_DOD["TOTAL"].values)
+        icDOD = se * sp.stats.t._ppf((1+0.99)/2., n-1)
+        newDF.set_value(circuit, "OOD_ic", icOOD)
+        newDF.set_value(circuit, "DOD_ic", icDOD) 
     
     for circuit in iccad2015_circuits:
         # relação entre DOD e OOD "1-(DOD/OOD)"

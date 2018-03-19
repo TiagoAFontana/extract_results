@@ -51,65 +51,88 @@ def generateProblemCSV(name_csv="out.csv", csvs_path=".", out_path=".", list_csv
 
 # Gerar CSVs Independentes por problema
 # contract_results(path=".", problem="problem1", aux="", out_path='.', miss=True, runtime=True, sequential=True, parallel=True):
-path = '/home/tiago/experiments16-02/0803'
+# path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O3/runtime_03'
+path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O3/miss_O3'
+# path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O0'
+# path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O3'
 out_path = path + '/csv'
 
-if True:
+#------------------#
+problem1 = True 
+problem2 = True
+grouped = True
+problem3 = False
+#
+runtime = False
+miss = True
+#
+problemfile = False
+#------------------#
+
+if problem1:
     # Miss Sequential Problem 1
-    contract_results(path, "problem1", "_miss_sequential", out_path, True, False, True, False)
+    if miss: contract_results(path, "problem1", "_miss_sequential", out_path, True, False, True, False)
     # Miss Parallel Problem 1
-    contract_results(path, "problem1", "_miss_parallel", out_path, True, False, False, True)
+    if miss: contract_results(path, "problem1", "_miss_parallel", out_path, True, False, False, True)
     # Runtime Sequential Problem 1
-    contract_results(path, "problem1", "_runtime_sequential", out_path, False, True, True, False)
+    if runtime: contract_results(path, "problem1", "_runtime_sequential", out_path, False, True, True, False)
     # Runtime Paralel Problem 1
-    contract_results(path, "problem1", "_runtime_parallel", out_path,  False, True, False, True)
+    if runtime: contract_results(path, "problem1", "_runtime_parallel", out_path,  False, True, False, True)
     # Problem1 CSV
-    files = ["problem1_miss_sequential.csv", "problem1_runtime_sequential.csv", "problem1_miss_parallel.csv", "problem1_runtime_parallel.csv"]
-    generateProblemCSV("Problem1.csv", out_path, out_path, files)
+    if problemfile: 
+        files = ["problem1_miss_sequential.csv", "problem1_runtime_sequential.csv", "problem1_miss_parallel.csv", "problem1_runtime_parallel.csv"]
+        # files = ["problem1_miss_sequential.csv", "problem1_miss_parallel.csv"]
+        generateProblemCSV("Problem1.csv", out_path, out_path, files)
 
-if True:
+if problem2:
     # Miss Sequential Problem 2
-    contract_results(path, "problem2", "_miss_sequential", out_path, True, False, True, False)
+    if miss: contract_results(path, "problem2", "_miss_sequential", out_path, True, False, True, False)
     # Miss Parallel Problem 2
-    contract_results(path, "problem2", "_miss_parallel", out_path, True, False, False, True)
+    if miss: contract_results(path, "problem2", "_miss_parallel", out_path, True, False, False, True)
     # Runtime Sequential Problem 2
-    contract_results(path, "problem2", "_runtime_sequential", out_path, False, True, True, False)
+    if runtime: contract_results(path, "problem2", "_runtime_sequential", out_path, False, True, True, False)
     # Runtime Paralel Problem 2
-    contract_results(path, "problem2", "_runtime_parallel", out_path,  False, True, False, True)
-if True:
-    #PROPERTY ORDERED
-    # Miss Sequential Problem 2 Ordered
-    contract_results(path, "problem2", "_miss_sequential_property_ordered", out_path, True, False, True, False, "property_ordered_")    
-    # Miss Parallel Problem 2 Ordered
-    contract_results(path, "problem2", "_miss_parallel_property_ordered", out_path, True, False, False, True, "property_ordered_")    
-    # Runtime Sequential Problem 2 Ordered
-    contract_results(path, "problem2", "_runtime_sequential_property_ordered", out_path, False, True, True, False, "property_ordered_")
-    # Runtime Paralel Problem 2 Ordered
-    contract_results(path, "problem2", "_runtime_parallel_property_ordered", out_path,  False, True, False, True, "property_ordered_")
-    #ORDERED
-    # Miss Sequential Problem 2 Ordered
-    # contract_results(path, "problem2", "_miss_sequential_ordered", out_path, True, False, True, False, "ordered_")
-    # Miss Parallel Problem 2 Ordered
-    # contract_results(path, "problem2", "_miss_parallel_ordered", out_path, True, False, False, True, "ordered_")
-    # Runtime Sequential Problem 2 Ordered
-    # contract_results(path, "problem2", "_runtime_sequential_ordered", out_path, False, True, True, False, "ordered_")
-    # Runtime Paralel Problem 2 Ordered
-    # contract_results(path, "problem2", "_runtime_parallel_ordered", out_path,  False, True, False, True, "ordered_")
-    
-    # Problem2 CSV
-    files = ["problem2_miss_sequential.csv", "problem2_runtime_sequential.csv", "problem2_miss_parallel.csv", "problem2_runtime_parallel.csv",
-             "problem2_miss_sequential_property_ordered.csv", "problem2_runtime_sequential_property_ordered.csv", "problem2_miss_parallel_property_ordered.csv", "problem2_runtime_parallel_property_ordered.csv"]
-    generateProblemCSV("Problem2.csv", out_path, out_path, files)
+    if runtime: contract_results(path, "problem2", "_runtime_parallel", out_path,  False, True, False, True)
+    if grouped:
+        #PROPERTY ORDERED
+        # Miss Sequential Problem 2 Ordered
+        if miss: contract_results(path, "problem2", "_miss_sequential_property_ordered", out_path, True, False, True, False, "property_ordered_")    
+        # Miss Parallel Problem 2 Ordered
+        if miss: contract_results(path, "problem2", "_miss_parallel_property_ordered", out_path, True, False, False, True, "property_ordered_")    
+        # Runtime Sequential Problem 2 Ordered
+        if runtime: contract_results(path, "problem2", "_runtime_sequential_property_ordered", out_path, False, True, True, False, "property_ordered_")
+        # Runtime Paralel Problem 2 Ordered
+        if runtime: contract_results(path, "problem2", "_runtime_parallel_property_ordered", out_path,  False, True, False, True, "property_ordered_")
+        #ORDERED
+        # Miss Sequential Problem 2 Ordered
+        # contract_results(path, "problem2", "_miss_sequential_ordered", out_path, True, False, True, False, "ordered_")
+        # Miss Parallel Problem 2 Ordered
+        # contract_results(path, "problem2", "_miss_parallel_ordered", out_path, True, False, False, True, "ordered_")
+        # Runtime Sequential Problem 2 Ordered
+        # contract_results(path, "problem2", "_runtime_sequential_ordered", out_path, False, True, True, False, "ordered_")
+        # Runtime Paralel Problem 2 Ordered
+        # contract_results(path, "problem2", "_runtime_parallel_ordered", out_path,  False, True, False, True, "ordered_")
+    if problemfile:
+        # Problem2 CSV
+        files = ["problem2_miss_sequential.csv", "problem2_runtime_sequential.csv", "problem2_miss_parallel.csv", "problem2_runtime_parallel.csv",
+                "problem2_miss_sequential_property_ordered.csv", "problem2_runtime_sequential_property_ordered.csv", "problem2_miss_parallel_property_ordered.csv", "problem2_runtime_parallel_property_ordered.csv"]
+        # files = ["problem2_miss_sequential.csv", "problem2_miss_parallel.csv", "problem2_miss_sequential_property_ordered.csv", "problem2_miss_parallel_property_ordered.csv" ]
+        generateProblemCSV("Problem2.csv", out_path, out_path, files)
 
-if True:
+if problem3:
     # Miss Sequential Problem 3
-    contract_results(path, "problem3", "_miss_sequential", out_path, True, False, True, False)
+    if miss: contract_results(path, "problem3", "_miss_sequential", out_path, True, False, True, False)
     # Miss Parallel Problem 3
-    contract_results(path, "problem3", "_miss_parallel", out_path, True, False, False, True)
+    if miss: contract_results(path, "problem3", "_miss_parallel", out_path, True, False, False, True)
     # Runtime Sequential Problem 3
-    contract_results(path, "problem3", "_runtime_sequential", out_path, False, True, True, False)
+    if runtime: contract_results(path, "problem3", "_runtime_sequential", out_path, False, True, True, False)
     # Runtime Paralel Problem 3
-    contract_results(path, "problem3", "_runtime_parallel", out_path,  False, True, False, True)
-    # Problem3 CSV
-    files = ["problem3_miss_sequential.csv", "problem3_runtime_sequential.csv", "problem3_miss_parallel.csv", "problem3_runtime_parallel.csv"]
-    generateProblemCSV("Problem3.csv", out_path, out_path, files)
+    if runtime: contract_results(path, "problem3", "_runtime_parallel", out_path,  False, True, False, True)
+    if problemfile:
+        # Problem3 CSV
+        files = ["problem3_miss_sequential.csv", "problem3_runtime_sequential.csv", "problem3_miss_parallel.csv", "problem3_runtime_parallel.csv"]
+        generateProblemCSV("Problem3.csv", out_path, out_path, files)
+
+    
+        
+        
