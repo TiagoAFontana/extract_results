@@ -40,14 +40,16 @@ def plot_miss_graphic(y_ticks, path_to_csv=".", filename="problem1_py", out_path
 # Gerar CSVs Independentes por problema
 # def plot_miss_graphic(path_to_csv=".", filename="problem1_py", out_path='.', title="" format="csv"):
 # path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O0'
-path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O3/runtime_03'
+path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O3'
+# path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O3/runtime_03'
 out_path = path + '/graficos'
 
 #------------------#
-problem1 = True 
-problem2 = True
-grouped = True
-problem3 = True
+problem1 = False
+problem2 = False
+grouped = False
+problem3 = False
+problem4 = True
 #------------------#
 compilacao = 'O3'
 
@@ -83,3 +85,8 @@ if problem3:
     plot_miss_graphic(scaleLimits, path+'/csv', "problem3_runtime_sequential", out_path, "P3: Runtime Sequential")
     # Runtime Parallel Problem 3
     plot_miss_graphic(scaleLimits, path+'/csv', "problem3_runtime_parallel", out_path, "P3: Runtime Parallel")
+
+if problem4:
+    scaleLimits = [0, 66000000000.0, 330000000000.0] if compilacao == 'O0' else [0, 8400000000.0, 42000000000.0]
+    # Runtime Sequential Problem 3
+    plot_miss_graphic(scaleLimits, path+'/csv', "problem4_runtime_sequential", out_path, "P4: Runtime Sequential")

@@ -46,8 +46,9 @@ def plot_miss_graphic(y_ticks, path_to_csv=".", filename="problem1_py", out_path
 # Gerar CSVs Independentes por problema
 # def plot_miss_graphic(path_to_csv=".", filename="problem1_py", out_path='.', title="" format="csv"):
 # path = '/home/tiago/experiments16-02/0803'
-path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O3/miss_O3'
+# path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O3/miss_O3'
 # path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O0'
+path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O3'
 out_path = path + '/graficos'
 
 #------------------#
@@ -55,8 +56,9 @@ problem1 = False
 problem2 = False
 grouped = False
 problem3 = False
+problem4 = True
 #------------------#
-compilacao = 'O0'
+compilacao = 'O3'
 
 if problem1:
     scaleLimits = [0, 2000000.0, 12000000.0] if compilacao == 'O0' else [0, 20000000.0, 100000000.0]
@@ -91,10 +93,14 @@ if problem3:
     # Miss Parallel Problem 3
     plot_miss_graphic(scaleLimits, path+'/csv', "problem3_miss_parallel", out_path, "Problema 3: Miss Parallel")
 
+# scaleLimits = [0, 50000000.0, 350000000.0] if compilacao == 'O0' else [0, 50000000.0, 350000000.0]
+# path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O0/problem3_size'
+# out_path = path + '/graficos'
+# plot_miss_graphic(scaleLimits, path+'/csv', "problem3_miss_sequential", out_path, "Problema 3: Miss Sequential", discartColumns=16)
+# plot_miss_graphic(scaleLimits, path+'/csv', "problem3_miss_parallel", out_path, "Problema 3: Miss Parallel", discartColumns=16)
 
 
-scaleLimits = [0, 50000000.0, 350000000.0] if compilacao == 'O0' else [0, 50000000.0, 350000000.0]
-path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O0/problem3_size'
-out_path = path + '/graficos'
-plot_miss_graphic(scaleLimits, path+'/csv', "problem3_miss_sequential", out_path, "Problema 3: Miss Sequential", discartColumns=20)
-plot_miss_graphic(scaleLimits, path+'/csv', "problem3_miss_parallel", out_path, "Problema 3: Miss Parallel", discartColumns=20)
+if problem4:
+    scaleLimits = [0, 1100000000.0, 5500000000.0] if compilacao == 'O0' else [0, 1100000000.0, 5500000000.0]
+    # Miss Sequential Problem 3
+    plot_miss_graphic(scaleLimits, path+'/csv', "problem4_miss_sequential", out_path, "Problema 4: Miss Sequential")

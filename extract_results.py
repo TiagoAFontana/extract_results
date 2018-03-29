@@ -52,21 +52,22 @@ def generateProblemCSV(name_csv="out.csv", csvs_path=".", out_path=".", list_csv
 # Gerar CSVs Independentes por problema
 # contract_results(path=".", problem="problem1", aux="", out_path='.', miss=True, runtime=True, sequential=True, parallel=True):
 # path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O3/runtime_03'
-path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O3/miss_O3'
+# path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O3/miss_O3'
 # path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O0'
-# path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O3'
+path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O3'
 out_path = path + '/csv'
 
 #------------------#
-problem1 = True 
-problem2 = True
-grouped = True
+problem1 = False
+problem2 = False
+grouped = False
 problem3 = False
+problem4 = True
 #
-runtime = False
+runtime = True
 miss = True
 #
-problemfile = False
+problemfile = True
 #------------------#
 
 if problem1:
@@ -133,6 +134,13 @@ if problem3:
         files = ["problem3_miss_sequential.csv", "problem3_runtime_sequential.csv", "problem3_miss_parallel.csv", "problem3_runtime_parallel.csv"]
         generateProblemCSV("Problem3.csv", out_path, out_path, files)
 
-    
-        
+if problem4:
+    # Miss Sequential Problem 3
+    if miss: contract_results(path, "problem4", "_miss_sequential", out_path, True, False, True, False)
+    # Runtime Sequential Problem 3
+    if runtime: contract_results(path, "problem4", "_runtime_sequential", out_path, False, True, True, False)
+    if problemfile:
+        # Problem3 CSV
+        files = ["problem4_miss_sequential.csv", "problem4_runtime_sequential.csv"]
+        generateProblemCSV("Problem4.csv", out_path, out_path, files)
         
