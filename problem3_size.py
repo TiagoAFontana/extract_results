@@ -87,7 +87,7 @@ def mean_miss_dataFrame_P3_size(path=".", execution="", problem="", aux="", miss
 def mean_runtime_dataFrame_P3_size(path=".", execution="", problem="", aux="", extraSize=["_e125", "_e150", "_e175", "_e200", "_e400", "_e600"]):
     #get unit 
     circuit = 'superblue18'
-    data_DOD = pd.read_csv(path + "/" + problem + "/" + "runtime_" + execution + "_" + problem + "_DOD_" + ordered + circuit + aux + ".txt", sep=' ')
+    data_DOD = pd.read_csv(path + "/" + problem + "/" + "runtime_" + execution + "_" + problem + "_DOD_" +  circuit + aux + "_e0.txt", sep=' ')
     unit = data_DOD["unidade"][0]
 
     RUNTIME = "Runtime" +"_"+ execution +"_"+ problem+"_("+unit+")"
@@ -97,17 +97,29 @@ def mean_runtime_dataFrame_P3_size(path=".", execution="", problem="", aux="", e
     newDF[RUNTIME] = ["superblue18", "superblue4", "superblue16", "superblue5", "superblue1", "superblue3", "superblue10", "superblue7"]
     newDF.set_index(RUNTIME, drop=True, append=False, inplace=True, verify_integrity=False)
 
+    # create colunns
+    newDF.set_value(iccad2015_circuits[0], "OOD" + execution, 0)
+    newDF.set_value(iccad2015_circuits[0], "DOD" + execution, 0)
+    for size in extraSize:
+        newDF.set_value(iccad2015_circuits[0], "OOD" + execution + size, 0)
+    newDF.set_value(iccad2015_circuits[0], "OOD_std" + execution, 0)
+    newDF.set_value(iccad2015_circuits[0], "DOD_std" + execution, 0)
+    for size in extraSize:
+        newDF.set_value(iccad2015_circuits[0], "OOD_std" + execution + size, 0)
+    newDF.set_value(iccad2015_circuits[0], "OOD_ic" + execution, 0)
+    newDF.set_value(iccad2015_circuits[0], "DOD_ic" + execution, 0)
+    for size in extraSize:
+        newDF.set_value(iccad2015_circuits[0], "OOD_ic" + execution + size, 0)
+
+    # normal
     for circuit in iccad2015_circuits:
-        data_OOD = pd.read_csv(path + "/" + problem + "/" + "runtime_" + execution + "_" + problem + "_OOD_"+ circuit + ".txt", sep=' ')
-        data_DOD = pd.read_csv(path + "/" + problem + "/" + "runtime_" + execution + "_" + problem + "_DOD_" + ordered + circuit + aux + ".txt", sep=' ')
+        data_OOD = pd.read_csv(path + "/" + problem + "/" + "runtime_" + execution + "_" + problem + "_OOD_"+ circuit + aux + "_e0.txt", sep=' ')
+        data_DOD = pd.read_csv(path + "/" + problem + "/" + "runtime_" + execution + "_" + problem + "_DOD_" + circuit + aux + "_e0.txt", sep=' ')
         newDF.set_value(circuit, "OOD" + execution, data_OOD["runtime"].mean())
         newDF.set_value(circuit, "DOD" + execution, data_DOD["runtime"].mean())
         newDF.set_value(circuit, "OOD_std" + execution, data_OOD["runtime"].std())
         newDF.set_value(circuit, "DOD_std" + execution, data_DOD["runtime"].std())
-#         print("desvio padrão  %" + circuit +" "+ str(data_OOD["runtime"].std() \/ data_OOD["runtime"].mean() *100) + " %")
-#         print("desvio padrão  %" + circuit +" "+ str(data_DOD["runtime"].std() \/ data_DOD["runtime"].mean() *100) + " %")
-#         print("\n\n")
-        
+
         #intervalo de confianca de cada circuito
         n = len(data_OOD["runtime"])
         m, se = np.mean(data_OOD["runtime"].values), scipy.stats.sem(data_OOD["runtime"].values)
@@ -115,9 +127,22 @@ def mean_runtime_dataFrame_P3_size(path=".", execution="", problem="", aux="", e
         n = len(data_DOD["runtime"])
         m, se = np.mean(data_DOD["runtime"].values), scipy.stats.sem(data_DOD["runtime"].values)
         icDOD = se * sp.stats.t._ppf((1+0.99)/2., n-1)
-        newDF.set_value(circuit, "OOD_ic", icOOD)
-        newDF.set_value(circuit, "DOD_ic", icDOD)
+        newDF.set_value(circuit, "OOD_ic" + execution, icOOD)
+        newDF.set_value(circuit, "DOD_ic" + execution, icDOD)
 
+
+    # obj estendidos
+    for size in extraSize:
+        for circuit in iccad2015_circuits:
+            data_OOD = pd.read_csv(path + "/" + problem + "/" + "runtime_" + execution + "_" + problem + "_OOD_" + circuit + aux + size +".txt", sep=' ')
+            newDF.set_value(circuit, "OOD" + execution + size, data_OOD["runtime"].mean())
+            newDF.set_value(circuit, "OOD_std" + execution + size, data_OOD["runtime"].std())
+            
+            #intervalo de confianca de cada circuito
+            n = len(data_OOD["runtime"])
+            m, se = np.mean(data_OOD["runtime"].values), scipy.stats.sem(data_OOD["runtime"].values)
+            icOOD = se * sp.stats.t._ppf((1+0.99)/2., n-1)
+            newDF.set_value(circuit, "OOD_ic" + execution + size, icOOD)
 
 #     print(newDF)
 
@@ -138,10 +163,10 @@ def mean_runtime_dataFrame_P3_size(path=".", execution="", problem="", aux="", e
 
     return newDF
 
-def contract_results_P3Psize(path=".", problem="problem3", aux="", out_path='.', miss=True, runtime=True, sequential=True, parallel=True):
+def contract_results_P3Psize(path=".", problem="problem3", auxFile="", out_path='.', miss=True, runtime=True, sequential=True, parallel=True):
     # contract results in one CSV
 
-    fileName = out_path + "/" + problem  + aux + ".csv"
+    fileName = out_path + "/" + problem  + auxFile + "_extraSize.csv"
     if miss and sequential:
         dfMissSequential = mean_miss_dataFrame_P3_size(path, "sequential", problem, extraSize=[ "_e125", "_e150", "_e175", "_e200", "_e400", "_e600"])
     if miss and parallel:
@@ -171,15 +196,16 @@ def contract_results_P3Psize(path=".", problem="problem3", aux="", out_path='.',
     print("write csv on " + fileName)
 
 
-path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O0/problem3_size'
-out_path = path + '/csv'
+# path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O0/problem3_size'
+path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O3'
+out_path = path + '/csv/p3size'
 #------------------#
-problem3Size = True
+problem3Size = False
 #
-runtime = True
+runtime = False
 miss = False
 #------------------#
-if (problem3Size and miss):
+if (problem3Size):
     # Miss Sequential Problem 3
     if miss: contract_results_P3Psize(path, "problem3", "_miss_sequential", out_path, True, False, True, False)
     # Miss Parallel Problem 3

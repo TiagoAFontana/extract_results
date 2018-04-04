@@ -1,22 +1,22 @@
 # -*- coding: utf-8 -*-
 from extract_miss import *
 from extract_runtime import *
+from problem3_size import contract_results_P3Psize
 
-
-def contract_results(path=".", problem="problem1", aux="", out_path='.', miss=True, runtime=True, sequential=True, parallel=True, order=""):
+def contract_results(path=".", problem="problem1", auxFile="", out_path='.', miss=True, runtime=True, sequential=True, parallel=True, order="", aux=""):
     # contract results in one CSV
 
-    fileName = out_path + "/" + problem  + aux + ".csv"
+    fileName = out_path + "/" + problem  + auxFile + ".csv"
 
     if miss and sequential:
-        dfMissSequential = mean_miss_dataFrame(path, "sequential", problem, ordered=order)
+        dfMissSequential = mean_miss_dataFrame(path, "sequential", problem, ordered=order, aux=aux)
     if miss and parallel:
-        dfMissParallel = mean_miss_dataFrame(path, "parallel", problem, ordered=order)
+        dfMissParallel = mean_miss_dataFrame(path, "parallel", problem, ordered=order, aux=aux)
     if runtime and sequential:
         dfRuntimeSequential = mean_runtime_dataFrame(
-            path, "sequential", problem, ordered=order)
+            path, "sequential", problem, ordered=order, aux=aux)
     if runtime and parallel:
-        dfRuntimeParallel = mean_runtime_dataFrame(path, "parallel", problem, ordered=order)
+        dfRuntimeParallel = mean_runtime_dataFrame(path, "parallel", problem, ordered=order, aux=aux)
 
     if miss and sequential:
         dfMissSequential.to_csv(fileName, mode='w')
@@ -58,10 +58,11 @@ path = '/home/tiago/Dropbox/mestrado/experiments/0309_cold_cache_o0_30/O3'
 out_path = path + '/csv'
 
 #------------------#
-problem1 = False
-problem2 = False
-grouped = False
-problem3 = False
+problem1 = True
+problem2 = True
+grouped = True
+problem3 = True
+extraSize = True
 problem4 = True
 #
 runtime = True
@@ -122,13 +123,22 @@ if problem2:
 
 if problem3:
     # Miss Sequential Problem 3
-    if miss: contract_results(path, "problem3", "_miss_sequential", out_path, True, False, True, False)
+    if miss: contract_results(path, "problem3", "_miss_sequential", out_path, True, False, True, False, aux='_e0')
     # Miss Parallel Problem 3
-    if miss: contract_results(path, "problem3", "_miss_parallel", out_path, True, False, False, True)
+    if miss: contract_results(path, "problem3", "_miss_parallel", out_path, True, False, False, True, aux='_e0')
     # Runtime Sequential Problem 3
-    if runtime: contract_results(path, "problem3", "_runtime_sequential", out_path, False, True, True, False)
+    if runtime: contract_results(path, "problem3", "_runtime_sequential", out_path, False, True, True, False, aux='_e0')
     # Runtime Paralel Problem 3
-    if runtime: contract_results(path, "problem3", "_runtime_parallel", out_path,  False, True, False, True)
+    if runtime: contract_results(path, "problem3", "_runtime_parallel", out_path,  False, True, False, True, aux='_e0')
+    if extraSize:
+        # Miss Sequential Problem 3
+        if miss: contract_results_P3Psize(path, "problem3", "_miss_sequential", out_path, True, False, True, False)
+        # Miss Parallel Problem 3
+        if miss: contract_results_P3Psize(path, "problem3", "_miss_parallel", out_path, True, False, False, True)
+        # Runtime Sequential Problem 3
+        if runtime: contract_results_P3Psize(path, "problem3", "_runtime_sequential", out_path, False, True, True, False)
+        # Runtime Paralel Problem 3
+        if runtime: contract_results_P3Psize(path, "problem3", "_runtime_parallel", out_path,  False, True, False, True)
     if problemfile:
         # Problem3 CSV
         files = ["problem3_miss_sequential.csv", "problem3_runtime_sequential.csv", "problem3_miss_parallel.csv", "problem3_runtime_parallel.csv"]

@@ -39,7 +39,7 @@ def mean_miss_dataFrame(path=".", execution="", problem="", aux="", missType = [
     newDF.set_index(PAPI, drop=True, append=False, inplace=True, verify_integrity=False)
 
     for circuit in iccad2015_circuits:
-        data_OOD = pd.read_csv(path + "/" + problem + "/" + "miss_" + execution + "_" + problem + "_OOD_"+ circuit + ".txt", sep=' ')
+        data_OOD = pd.read_csv(path + "/" + problem + "/" + "miss_" + execution + "_" + problem + "_OOD_"+ circuit +  aux +".txt", sep=' ')
         data_DOD = pd.read_csv(path + "/" + problem + "/" + "miss_" + execution + "_" + problem + "_DOD_"+ ordered + circuit + aux + ".txt", sep=' ')
         
         data_OOD["TOTAL"] = 0

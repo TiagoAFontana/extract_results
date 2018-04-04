@@ -17,7 +17,7 @@ def runtime_dataFrame(path=".", execution="", problem="", aux=""):
     newDF["Runtime(us)"] = ["sequential", "parallel"]
     newDF.set_index("Runtime(us)", drop=True, append=False, inplace=True, verify_integrity=False)
     for circuit in iccad2015_circuits:
-        data_OOD = pd.read_csv(path +  "/" + "runtime_" + execution + "_" + problem + "_OOD_"+ circuit + ".txt", sep=' ')
+        data_OOD = pd.read_csv(path +  "/" + "runtime_" + execution + "_" + problem + "_OOD_"+ circuit + aux + ".txt", sep=' ')
         data_DOD = pd.read_csv(path +  "/" + "runtime_" + execution + "_" + problem + "_DOD_"+ circuit + aux + ".txt", sep=' ')
         newDF[circuit+"_OOD"] = [data_OOD["runtime"].mean() ]
         newDF[circuit+"_DOD"] = [data_DOD["runtime"].mean() ]
@@ -37,7 +37,7 @@ def mean_runtime_dataFrame(path=".", execution="", problem="", aux="", ordered="
     newDF.set_index(RUNTIME, drop=True, append=False, inplace=True, verify_integrity=False)
 
     for circuit in iccad2015_circuits:
-        data_OOD = pd.read_csv(path + "/" + problem + "/" + "runtime_" + execution + "_" + problem + "_OOD_"+ circuit + ".txt", sep=' ')
+        data_OOD = pd.read_csv(path + "/" + problem + "/" + "runtime_" + execution + "_" + problem + "_OOD_"+ circuit +  aux + ".txt", sep=' ')
         data_DOD = pd.read_csv(path + "/" + problem + "/" + "runtime_" + execution + "_" + problem + "_DOD_" + ordered + circuit + aux + ".txt", sep=' ')
         newDF.set_value(circuit, "OOD" + execution, data_OOD["runtime"].mean())
         newDF.set_value(circuit, "DOD" + execution, data_DOD["runtime"].mean())
